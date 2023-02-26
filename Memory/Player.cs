@@ -22,6 +22,29 @@ namespace Memory
             Position.Y = 0;
         }
         public abstract void DoTurn();
+        public void Move(Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.Left:
+                    Position.X -= 1;
+                    break;
+                case Direction.Right:
+                    Position.X += 1;
+                    break;
+                case Direction.Up:
+                    Position.Y -= 1;
+                    break;
+                case Direction.Down:
+                    Position.Y += 1;
+                    break;
+                default:
+                    break;
+            }
+
+            Console.SetCursorPosition(Position.X, Position.Y);
+            Thread.Sleep(500);
+        }
 
     }
 }

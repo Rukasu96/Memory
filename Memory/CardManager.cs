@@ -31,28 +31,29 @@ namespace Memory
             cards = new List<Card>();
         }
         
-        public void RevealCard(Board board, int posX, int posY)
+        public void RevealCard(Board board, int posX, int posY, int distanceX)
         {
-            if(board.Cards[posX, posY] == null)
+            if(board.Cards[posX - distanceX, posY] == null)
             {
                 return;
             }
-            else if (board.Cards[posX, posY].state is Revealed)
+            else if (board.Cards[posX - distanceX, posY].state is Revealed)
             {
                 return;
             }
-            Card card = board.Cards[posX, posY];
+            Card card = board.Cards[posX - distanceX, posY];
             card.TurnCard();
 
             revealdCards.AddRevealCard(card);
 
             if (revealdCards.revealdCards[1] != null)
             {
-                CheckCards(revealdCards.revealdCards[0], revealdCards.revealdCards[1], board);
+                CheckCards(revealdCards.revealdCards[0], revealdCards.revealdCards[1], board, distanceX);
             }
         }
+
         
-        private void CheckCards(Card card, Card card2, Board board)
+        private void CheckCards(Card card, Card card2, Board board, int distanceX)
         {
             if (card.ReverseModel == card2.ReverseModel)
             {
@@ -60,9 +61,8 @@ namespace Memory
                 revealdCards.ClearRevealCards();
                 card.RemoveCard();
                 card2.RemoveCard();
-                board.RemoveCardFromBoard(card);
-                board.RemoveCardFromBoard(card2);
-                
+                board.RemoveCardFromBoard(card, distanceX);
+                board.RemoveCardFromBoard(card2, distanceX);
             }
             else
             {
@@ -71,6 +71,8 @@ namespace Memory
                 card2.TurnCard();
                 revealdCards.ClearRevealCards();
             }
+
+            TurnController.Instance.ChangePlayer();
         }
 
         public void AddCardToList(Card card)

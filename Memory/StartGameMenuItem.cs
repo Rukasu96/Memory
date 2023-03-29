@@ -8,60 +8,50 @@ namespace Memory
 {
     internal class StartGameMenuItem : MenuItem
     {
-        private Board board;
-        private Board boardAi;
-
-        public StartGameMenuItem(Board board, Board boardAi) : base("Start")
+        private Board[] boards;
+        public StartGameMenuItem(Board[] boards) : base("Start")
         {
-            this.board = board;
-            this.boardAi = boardAi;
+            this.boards = boards;
             Action = ChooseSize;
         }
-
+        
         private void ChooseSize()
         {
-            int size01 = 4;
-            int size02 = 6;
-            int size03 = 8;
+            int[] sizes = Enum.GetValues(typeof(Size)).Cast<int>().ToArray();
+            int index = 1;
+            int size = 0;
             bool isOk;
 
-            Console.WriteLine($"1. Rozmiar {size01}x{size01}");
-            Console.WriteLine($"2. Rozmiar {size02}x{size02}");
-            Console.WriteLine($"3. Rozmiar {size03}x{size03}");
-
+            foreach (int value in sizes)
+            {
+                Console.WriteLine($"{index}. Rozmiar {value}x{value}");
+                index++;
+            }
+            
             do
             {
                 isOk = false;
-
                 string input = Console.ReadLine();
 
                 if (int.TryParse(input, out int result))
                 {
-                    switch (result)
+                    if(result > 0 && result <= sizes.Length)
                     {
-                        case 1:
-                            board.size = size01;
-                            boardAi.size = size01;
-                            break;
-                        case 2:
-                            board.size = size02;
-                            boardAi.size = size02;
-                            break;
-                        case 3:
-                            board.size = size03;
-                            boardAi.size = size03;
-                            break;
-                        default:
-                            Console.WriteLine("Wybierz 1, 2 lub 3");
-                            break;
+                        size = sizes[result - 1];
+                        isOk = true;
                     }
-                    isOk = true;
+                    
                 }
                 else
                 {
                     Console.WriteLine("Wybierz 1, 2 lub 3");
                 }
             } while (!isOk);
+
+            foreach(Board board in boards)
+            {
+                board.size = size;
+            }
 
             Console.Clear();
         }

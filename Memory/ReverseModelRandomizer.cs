@@ -12,47 +12,6 @@ namespace Memory
 
         public void SetReverseModel(List<Card> cards)
         {
-            //int half = cards.Count/2;
-            //char[] usedLetters = new char[half];
-
-            ////Losowanie kart
-            //int[] usedIndex = new int[cards.Count];
-            //int rand;
-            //bool isRepeated = true;
-
-            //for (int i = 0; i < cards.Count - 1; i++)
-            //{
-            //    rand = new Random().Next(0, cards.Count);
-            //    usedIndex[i] = rand;
-            //    do
-            //    {
-            //        rand = new Random().Next(0, cards.Count);
-            //        int index = usedIndex.FirstOrDefault(x => x == rand);
-
-            //        if ( index == null)
-            //        {
-            //            usedIndex[i] = rand;
-            //            isRepeated = false;
-            //        }
-
-            //    } while (isRepeated);
-            //}
-
-            ////Przypisywanie chara do pierwszej połowy kart
-            //for (int i = 0; i < half - 1; i++)
-            //{
-            //    cards[usedIndex[i]].ReverseModel = alpha[i];
-            //    usedLetters[i] = alpha[i];
-            //}
-
-            ////Przypisywanie chara do drugiej połowy kart
-            //int next = 0;
-            //for (int i = half; i < cards.Count - 1; i++)
-            //{
-            //    cards[usedIndex[i]].ReverseModel = usedLetters[next];
-            //    next++;
-            //}
-
             for(int i = 0; i < cards.Count; i += 2) 
             {
                 cards[i].ReverseModel = alpha[i / 2];

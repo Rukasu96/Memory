@@ -10,40 +10,27 @@ namespace Memory
     {
         public ActionController(Human human, Board board, Keyboard Keyboard)
         {
-            Keyboard.OnUp += () =>
-            {
-                if (board.IsCardExist(human.Position.X, human.Position.Y - 1))
-                {
-                    human.Move(Direction.Up);
-                }
-            };
+            Keyboard.OnUp += CreateMove(human, board, Direction.Up, () => human.Position.X, () => human.Position.Y - 1);
+            Keyboard.OnDown += CreateMove(human, board, Direction.Down, () => human.Position.X, () => human.Position.Y + 1);
+            Keyboard.OnLeft += CreateMove(human, board, Direction.Left, () => human.Position.X - 1, () => human.Position.Y);
+            Keyboard.OnRight += CreateMove(human, board, Direction.Right, () => human.Position.X + 1, () => human.Position.Y);
 
-            Keyboard.OnDown += () =>
-            {
-                if (board.IsCardExist(human.Position.X, human.Position.Y + 1))
-                {
-                    human.Move(Direction.Down);
-                }
-            };
+            Keyboard.OnEnter += () => CardManager.Instance.RevealCard(board, human.Position.X, human.Position.Y, 0);
 
-            Keyboard.OnLeft += () =>
-            {
-                if (board.IsCardExist(human.Position.X - 1, human.Position.Y))
-                {
-                    human.Move(Direction.Left);
-                }
-            };
-
-            Keyboard.OnRight += () =>
-            {
-                if (board.IsCardExist(human.Position.X + 1, human.Position.Y))
-                {
-                    human.Move(Direction.Right);
-                }
-            };
-
-            Keyboard.OnEnter += () => CardManager.Instance.RevealCard(board, human.Position.X, human.Position.Y);
         }
+
+        private Action CreateMove(Human human, Board board, Direction direction, Func<int> positionX, Func<int> positionY)
+        {
+            return () =>
+            {
+                if (board.IsCardExist(positionX(), positionY()))
+                {
+                    human.Move(direction, board, 0);
+                }
+            };
+        }
+
+        
 
     }
 }

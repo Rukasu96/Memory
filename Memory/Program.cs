@@ -2,32 +2,26 @@
 using System.Security.Cryptography;
 using static Memory.Player;
 
-Board boardAi = new Board();
+Board board = new Board();
 Board boardAI = new Board();
+
+Board[] boards = {board, boardAI};
+
 Menu menu = new Menu("Menu Główne");
-menu.Add(new StartGameMenuItem(boardAi, boardAI));
+menu.Add(new StartGameMenuItem(boards));
 menu.Run();
 
-boardAi.Draw(0);
-boardAI.Draw(10);
-
-Human human = new Human();
-Computer computer = new Computer(boardAI);
-Keyboard keyboard = new Keyboard();
-ActionController actionController = new ActionController(human, boardAi, keyboard);
-
+board.Draw(0);
 CardManager.Instance.SetRandomModel();
+boardAI.Draw(10);
+CardManager.Instance.SetRandomModel();
+
+Human human = new Human(board);
+Computer computer = new Computer(boardAI, 10);
 
 while (true)
 {
-    computer.DoTurn();
-
-    //Console.SetCursorPosition(human.Position.X, human.Position.Y);
-
-    //var input = Console.ReadKey().Key;
-
-    //keyboard.ButtonPressed(input);
-
+    TurnController.Instance.PlayTurn();
 }
 
 

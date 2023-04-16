@@ -9,7 +9,6 @@ namespace Memory
     public enum Size
     {
         Small = 4,
-        Medium = 6,
-        Large = 8,
+        Large = 6,
     }
 }

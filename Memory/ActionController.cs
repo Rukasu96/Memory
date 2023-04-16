@@ -8,24 +8,24 @@ namespace Memory
 {
     internal class ActionController
     {
-        public ActionController(Human human, Board board, Keyboard Keyboard)
+        public ActionController(Player player,int distanceX, Board board, Keyboard Keyboard)
         {
-            Keyboard.OnUp += CreateMove(human, board, Direction.Up, () => human.Position.X, () => human.Position.Y - 1);
-            Keyboard.OnDown += CreateMove(human, board, Direction.Down, () => human.Position.X, () => human.Position.Y + 1);
-            Keyboard.OnLeft += CreateMove(human, board, Direction.Left, () => human.Position.X - 1, () => human.Position.Y);
-            Keyboard.OnRight += CreateMove(human, board, Direction.Right, () => human.Position.X + 1, () => human.Position.Y);
+            Keyboard.OnUp += CreateMove(player, distanceX, board, Direction.Up, () => player.Position.X, () => player.Position.Y - 1);
+            Keyboard.OnDown += CreateMove(player, distanceX, board, Direction.Down, () => player.Position.X, () => player.Position.Y + 1);
+            Keyboard.OnLeft += CreateMove(player, distanceX, board, Direction.Left, () => player.Position.X - 1, () => player.Position.Y);
+            Keyboard.OnRight += CreateMove(player, distanceX, board, Direction.Right, () => player.Position.X + 1, () => player.Position.Y);
 
-            Keyboard.OnEnter += () => CardManager.Instance.RevealCard(board, human.Position.X, human.Position.Y, 0);
+            Keyboard.OnEnter += () => CardManager.Instance.RevealCard(board, player.Position.X, player.Position.Y, distanceX);
 
         }
 
-        private Action CreateMove(Human human, Board board, Direction direction, Func<int> positionX, Func<int> positionY)
+        private Action CreateMove(Player player,int distanceX, Board board, Direction direction, Func<int> positionX, Func<int> positionY)
         {
             return () =>
             {
                 if (board.IsCardExist(positionX(), positionY()))
                 {
-                    human.Move(direction, board, 0);
+                    player.Move(direction, board, distanceX);
                 }
             };
         }

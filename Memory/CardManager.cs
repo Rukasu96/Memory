@@ -33,16 +33,17 @@ namespace Memory
         
         public void RevealCard(Board board, int posX, int posY, int distanceX)
         {
-            if(board.Cards[posX - distanceX, posY] == null)
+            if(board.Cards?[posX - distanceX, posY] == null)
             {
                 return;
             }
-            else if (board.Cards[posX - distanceX, posY].state is Revealed)
+            else if (board.Cards?[posX - distanceX, posY]?.state is Revealed)
             {
                 return;
             }
-            Card card = board.Cards[posX - distanceX, posY];
-            card.TurnCard();
+
+            Card? card = board.Cards?[posX - distanceX, posY];
+            card?.TurnCard();
 
             revealdCards.AddRevealCard(card);
 
@@ -53,7 +54,7 @@ namespace Memory
         }
 
         
-        private void CheckCards(Card card, Card card2, Board board, int distanceX)
+        private void CheckCards(Card? card, Card? card2, Board board, int distanceX)
         {
             if (card.ReverseModel == card2.ReverseModel)
             {

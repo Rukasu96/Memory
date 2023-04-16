@@ -8,7 +8,7 @@ namespace Memory
 {
     internal class ReverseModelRandomizer : IRandomizer
     {
-        private char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        private char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
 
         public void SetReverseModel(List<Card> cards)
         {

@@ -28,9 +28,9 @@ namespace Memory
             return cards[posX, posY] == null;
         }
 
-        public Card FindFirstCard(int posX, int posY, Direction direction)
+        public Card? FindFirstCard(int posX, int posY, Direction direction)
         {
-            Card card = null;
+            Card? card = null;
             bool isFinded = false;
 
             switch (direction)
@@ -38,7 +38,7 @@ namespace Memory
                 case Direction.Left:
                     do
                     {
-                        if (cards[posX,posY] != null)
+                        if (cards?[posX,posY] != null)
                         {
                             card = cards[posX,posY];
                             isFinded = true;
@@ -63,7 +63,7 @@ namespace Memory
                 case Direction.Right:
                     do
                     {
-                        if (cards[posX, posY] != null)
+                        if (cards?[posX, posY] != null)
                         {
                             card = cards[posX, posY];
                             isFinded = true;
@@ -91,7 +91,7 @@ namespace Memory
                 case Direction.Up:
                     do
                     {
-                        if (cards[posX, posY] != null)
+                        if (cards?[posX, posY] != null)
                         {
                             card = cards[posX, posY];
                             isFinded = true;
@@ -116,7 +116,7 @@ namespace Memory
                 case Direction.Down:
                     do
                     {
-                        if (cards[posX, posY] != null)
+                        if (cards?[posX, posY] != null)
                         {
                             card = cards[posX, posY];
                             isFinded = true;

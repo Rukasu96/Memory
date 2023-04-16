@@ -8,14 +8,14 @@ namespace Memory
 {
     internal class RevealdCards
     {
-        public Card[] revealdCards;
+        public Card?[] revealdCards;
 
         public RevealdCards()
         {
             revealdCards = new Card[2];
         }
 
-        public void AddRevealCard(Card card)
+        public void AddRevealCard(Card? card)
         {
             if (revealdCards[0] == null)
             {

@@ -9,14 +9,11 @@ namespace Memory
 {
     internal class Human : Player
     {
-        private Keyboard keyboard;
-        private ActionController actionController;
 
         public Human(Board board) : base()
         {
-            keyboard = new Keyboard();
-            actionController = new ActionController(this, board, keyboard);
             isPlaying = true;
+            actionController = new ActionController(this, 0, board, keyboard);
         }
 
         public override void DoTurn()

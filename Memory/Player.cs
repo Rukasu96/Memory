@@ -9,6 +9,8 @@ namespace Memory
 {
     internal abstract class Player
     {
+        protected ActionController actionController;
+        protected Keyboard keyboard;
 
         public int Points { get; set; }
         public Coordinate Position { get; set; }
@@ -21,6 +23,7 @@ namespace Memory
             Direction = new Direction();
             Position.X = 0;
             Position.Y = 0;
+            keyboard = new Keyboard();
             TurnController.Instance.AddPlayers(this);
         }
         public abstract void DoTurn();
@@ -29,47 +32,27 @@ namespace Memory
             switch (dir)
             {
                 case Direction.Left:
-                    if (Position.X == 0 && Position.Y != 0)
+                    if (board.IsCardExist(Position.X - distanceX - 1, Position.Y))
                     {
-                        Position.X = board.size - 1;
-                        Position.Y--;
-                    }
-                    else
-                    {
-                        Position.X--;
+                        MakeMoveHorizontal(0, board.size - 1, -1);
                     }
                     break;
                 case Direction.Right:
-                    if (Position.X == board.size - 1 && Position.Y != board.size - 1)
+                    if (board.IsCardExist(Position.X - distanceX + 1, Position.Y))
                     {
-                        Position.X = 0;
-                        Position.Y++;
-                    }
-                    else
-                    {
-                        Position.X++;
+                        MakeMoveHorizontal(board.size - 1, 0, 1);
                     }
                     break;
                 case Direction.Up:
-                    if (Position.X != 0 && Position.Y == 0)
+                    if (board.IsCardExist(Position.X - distanceX, Position.Y - 1))
                     {
-                        Position.X--;
-                        Position.Y = board.size - 1;
-                    }
-                    else
-                    {
-                        Position.Y--;
+                        MakeMoveVertical(0, board.size - 1, -1);
                     }
                     break;
                 case Direction.Down:
-                    if (Position.X != board.size - 1 && Position.Y == board.size - 1)
+                    if (board.IsCardExist(Position.X - distanceX, Position.Y + 1))
                     {
-                        Position.X++;
-                        Position.Y = 0;
-                    }
-                    else
-                    {
-                        Position.Y++;
+                        MakeMoveVertical(board.size -1, 0, 1);
                     }
                     break;
                 default:
@@ -88,6 +71,32 @@ namespace Memory
 
         }
 
+        private void MakeMoveHorizontal(int RightLeftMaxPosition, int boardSize, int increaseValue)
+        {
+            if (Position.X == RightLeftMaxPosition && Position.Y != RightLeftMaxPosition)
+            {
+                Position.X = boardSize;
+                Position.Y = Position.Y + increaseValue;
+            }
+            else
+            {
+                Position.X = Position.X + increaseValue;
+            }
+        }
+
+        private void MakeMoveVertical(int UpDownMaxPosition, int boardSize, int increaseValue)
+        {
+            if (Position.X != UpDownMaxPosition && Position.Y == UpDownMaxPosition)
+            {
+                Position.X = Position.X + increaseValue;
+                Position.Y = boardSize;
+            }
+            else
+            {
+                Position.Y = Position.Y + increaseValue;
+            }
+        }
+
         private void JumpToCard(int positionX, int positionY, Direction direction,Board board)
         {
             if (board.FindFirstCard(positionX, positionY, direction) == null)
@@ -95,13 +104,15 @@ namespace Memory
                 return;
             }
 
-            Card card = board.FindFirstCard(positionX, positionY, direction);
+            Card? card = board.FindFirstCard(positionX, positionY, direction);
 
             Position.X = card.position.X;
             Position.Y = card.position.Y;
 
             Console.SetCursorPosition(Position.X, Position.Y);
         }
+
+        
 
     }
 }

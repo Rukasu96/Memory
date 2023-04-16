@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -11,7 +12,9 @@ namespace Memory
     {
         private Board boardAI;
         private int distanceX;
-        private List<Card> revealedcards;
+        private List<Card> revealedCards;
+        private List<Card> notRevealedCards;
+        private Card? temporaryCard;
 
         public Computer(Board boardAI, int distanceX) : base()
         {
@@ -20,7 +23,8 @@ namespace Memory
             this.distanceX = distanceX;
             isPlaying = false;
 
-            revealedcards = new List<Card>();
+            revealedCards = new List<Card>();
+            AddCardsToList();
         }
 
         public override void DoTurn()
@@ -30,12 +34,9 @@ namespace Memory
                 return;
             }
 
-            Card? temporaryCard = null;
+            temporaryCard = null;
 
             Console.SetCursorPosition(Position.X, Position.Y);
-
-            Random rand = new Random();
-            int movesCount = DrawMoves(3, 10);
 
             for (int i = 0; i < 2; i++)
             {
@@ -44,86 +45,79 @@ namespace Memory
                     return;
                 }
 
-                Card? revealedCard = null;
+                Card? cardToReveal = null;
 
-                if (revealedcards.Count > 0 && temporaryCard != null)
+                if(revealedCards.Count >= 2 && temporaryCard == null)
                 {
-                    revealedCard = revealedcards.FirstOrDefault(x => 
-                    ((x.ReverseModel == temporaryCard.ReverseModel) && (x.position.X != temporaryCard.position.X)) || 
-                    ((x.ReverseModel == temporaryCard.ReverseModel) && (x.position.Y != temporaryCard.position.Y)));
-                    
+                    bool HasTwoSameCard = false;
+
+                    for (int z = 0; z < revealedCards.Count - 1; z++)
+                    {
+                        Card firstCardInMemory = revealedCards[z];
+
+                        var secondCardInMemory = FindTheSameCard(firstCardInMemory);
+
+                        if (secondCardInMemory != null)
+                        {
+                            RevealTwoTheSameCards(firstCardInMemory, secondCardInMemory);
+                            HasTwoSameCard = true;
+                            break;
+                        }
+
+                    }
+
+                    if(HasTwoSameCard)
+                    {
+                        break;
+                    }
+
+                }
+                else if (revealedCards.Count > 0 && temporaryCard != null)
+                {
+                    cardToReveal = FindTheSameCard(temporaryCard);
+                }else if(notRevealedCards.Count > 0)
+                {
+                    cardToReveal = DrawNotRevealedCard();
                 }
 
-                if (revealedCard != null)
+                if (cardToReveal != null)
                 {
-                    MoveToCard(revealedCard);
+                    MoveToCard(cardToReveal);
                 }
                 else
                 {
+                    int movesCount = RandomNumber.GenerateNumber(3, 10);
 
                     for (int j = 0; j < movesCount; j++)
                     {
-                        int result = rand.Next(0, 4);
+                        int result = RandomNumber.GenerateNumber(0, 4);
 
                         switch (result)
                         {
                             case 0:
-                                if (boardAI.IsCardExist(Position.X - distanceX, Position.Y - 1))
-                                {
-                                    Move(Direction.Up, boardAI, distanceX);
-                                }
+                                Move(Direction.Up, boardAI, distanceX);
                                 break;
                             case 1:
-                                if (boardAI.IsCardExist(Position.X - distanceX, Position.Y + 1))
-                                {
-                                    Move(Direction.Down, boardAI, distanceX);
-                                }
+                                Move(Direction.Down, boardAI, distanceX);
                                 break;
                             case 2:
-                                if (boardAI.IsCardExist(Position.X - distanceX - 1, Position.Y))
-                                {
-                                    Move(Direction.Left, boardAI, distanceX);
-                                }
+                                Move(Direction.Left, boardAI, distanceX);
                                 break;
                             case 3:
-                                if (boardAI.IsCardExist(Position.X - distanceX + 1, Position.Y))
-                                {
-                                    Move(Direction.Right, boardAI, distanceX);
-                                }
+                                Move(Direction.Right, boardAI, distanceX);
                                 break;
                             default:
                                 break;
                         }
 
                     }
+
+                    ComputerRevealCard(cardToReveal);
+
                 }
 
-                CardManager.Instance.RevealCard(boardAI, Position.X, Position.Y, distanceX);
-
-                temporaryCard = boardAI.Cards[Position.X - distanceX, Position.Y];
-
-                if(revealedcards.FirstOrDefault(x => x == temporaryCard) == null)
-                {
-                    if (TryToAddReveleadCard())
-                    {
-                        revealedcards.Add(temporaryCard);
-                    }
-                }
-
-                if (revealedcards.Contains(null))
-                {
-                    revealedcards.Remove(revealedCard);
-                }
-
-                Thread.Sleep(200);
             }
             
-        }
-
-        private int DrawMoves(int min, int max)
-        {
-            Random rand = new Random();
-            return rand.Next(min, max);
         }
 
         private bool TryToAddReveleadCard()
@@ -139,7 +133,7 @@ namespace Memory
             return false;
         }
 
-        private void MoveToCard(Card? temporaryCard)
+        private void MoveToCard(Card? cardToReveal)
         {
             Random rand = new Random();
             bool IsOnCardPosition = false;
@@ -151,21 +145,21 @@ namespace Memory
                 switch (randNumb)
                 {
                     case 0:
-                        if (temporaryCard.position.X > Position.X)
+                        if (cardToReveal.position.X > Position.X)
                         {
                             Move(Direction.Right, boardAI, distanceX);
                         }
-                        else if (temporaryCard.position.X < Position.X)
+                        else if (cardToReveal.position.X < Position.X)
                         {
                             Move(Direction.Left, boardAI, distanceX);
                         }
                         break;
                     case 1:
-                        if (temporaryCard.position.Y > Position.Y)
+                        if (cardToReveal.position.Y > Position.Y)
                         {
                             Move(Direction.Down, boardAI, distanceX);
                         }
-                        else if (temporaryCard.position.Y < Position.Y)
+                        else if (cardToReveal.position.Y < Position.Y)
                         {
                             Move(Direction.Up, boardAI, distanceX);
                         }
@@ -174,13 +168,94 @@ namespace Memory
                         break;
                 }
 
-                if(Position.X == temporaryCard.position.X && Position.Y == temporaryCard.position.Y)
+                if(Position.X == cardToReveal.position.X && Position.Y == cardToReveal.position.Y)
                 {
                     IsOnCardPosition = true;
                 }
-                
+
             }
-           
+
+            ComputerRevealCard(cardToReveal);
+        }
+
+        private void ComputerRevealCard(Card? cardToReveal)
+        {
+            temporaryCard = boardAI.Cards[Position.X - distanceX, Position.Y];
+
+            if (revealedCards.FirstOrDefault(x => x == temporaryCard) == null)
+            {
+                if (TryToAddReveleadCard())
+                {
+                    revealedCards.Add(temporaryCard);
+                }
+            }
+
+            CardManager.Instance.RevealCard(boardAI, Position.X, Position.Y, distanceX);
+
+            if(revealedCards.Count > 0)
+            {
+                RemoveRevealedCardFromList(temporaryCard);
+            }
+
+            Thread.Sleep(200);
+        }
+        
+        private void RevealTwoTheSameCards(Card firstCard, Card secondCard)
+        {
+            MoveToCard(firstCard);
+            MoveToCard(secondCard);
+            revealedCards.Remove(firstCard);
+            revealedCards.Remove(secondCard);
+        }
+
+        private void RemoveRevealedCardFromList(Card cardToRemove)
+        {
+            var cardsToRemove = revealedCards.Where(x => x == null || x.state is Revealed ).ToList();
+
+            foreach(Card card in cardsToRemove)
+            {
+                revealedCards.Remove(card);
+            }
+
+            cardsToRemove.Clear();
+        }
+
+        private Card? FindTheSameCard(Card card)
+        {
+            return revealedCards.FirstOrDefault(x =>
+            ((x.ReverseModel == card.ReverseModel) && (x.position.X != card.position.X)) ||
+            ((x.ReverseModel == card.ReverseModel) && (x.position.Y != card.position.Y)));
+        }
+
+        private Card? DrawNotRevealedCard()
+        {
+            Card card;
+            int posX;
+            int posY;
+
+            do
+            {
+                posX = RandomNumber.GenerateNumber(0, boardAI.size);
+                posY = RandomNumber.GenerateNumber(0, boardAI.size);
+
+                card = boardAI.ReturnCard(posX, posY);
+
+            } while (card == null);
+
+            notRevealedCards.Remove(card);
+            return card;
+        }
+
+        private void AddCardsToList()
+        {
+            notRevealedCards = new List<Card>();
+            for (int i = 0; i < boardAI.size; i++)
+            {
+                for (int j = 0; j < boardAI.size; j++)
+                {
+                    notRevealedCards.Add(boardAI.ReturnCard(i, j));
+                }
+            }
         }
     }
 }

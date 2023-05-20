@@ -9,10 +9,14 @@ namespace Memory
     internal class StartGameMenuItem : MenuItem
     {
         private Board[] boards;
-        public StartGameMenuItem(Board[] boards) : base("Start")
+        private Menu mainMenu;
+        private GameManager gameManager;
+
+        public StartGameMenuItem(GameManager gameManager, Menu MainMenu) : base("Start")
         {
-            this.boards = boards;
+            this.gameManager = gameManager;
             Action = ChooseSize;
+            this.mainMenu = MainMenu;
         }
         
         private void ChooseSize()
@@ -40,7 +44,8 @@ namespace Memory
                         size = sizes[result - 1];
                         isOk = true;
                     }
-                    
+
+                    mainMenu.state = State.On;
                 }
                 else
                 {
@@ -48,10 +53,11 @@ namespace Memory
                 }
             } while (!isOk);
 
-            foreach(Board board in boards)
+            gameManager.Size = size;
+            /*foreach(Board board in boards)
             {
                 board.size = size;
-            }
+            }*/
 
             Console.Clear();
         }

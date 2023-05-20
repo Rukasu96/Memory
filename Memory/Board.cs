@@ -10,12 +10,13 @@ namespace Memory
     {
         public Card?[,]? Cards { get => cards;}
         public int size;
-
+        public int points;
+        public int totalPoints;
         private Card?[,]? cards;
 
-        public bool IsCardExist(int posX, int posY)
+        public bool IsCardExist(int posX, int posY, int distanceX)
         {
-            return posX >= 0 && posX < cards.GetLength(0) && posY >= 0 && posY < cards.GetLength(1);
+            return posX - distanceX >= 0 && posX - distanceX < cards.GetLength(0) && posY >= 0 && posY < cards.GetLength(1);
         }
 
         public Card ReturnCard(int posX, int posY)
@@ -151,6 +152,7 @@ namespace Memory
         public void RemoveCardFromBoard(Card card, int distanceX)
         {
             cards[card.position.X - distanceX, card.position.Y] = null;
+            points++;
         }
 
         public void Draw(int distanceX)
@@ -165,6 +167,8 @@ namespace Memory
                 }
                 distanceX++;
             }
+
+            totalPoints = size * size;
         }
     }
 }

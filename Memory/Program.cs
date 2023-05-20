@@ -2,26 +2,37 @@
 using System.Security.Cryptography;
 using static Memory.Player;
 
-Board board = new Board();
-Board boardAI = new Board();
+int count = 0;
+new Thread(() =>
+{
+    while(true)
+    {
+        var pos = Console.GetCursorPosition();
+        Console.SetCursorPosition(0, 5);
+        Console.Write($"{count / 60}:{count % 60}");
+        Console.SetCursorPosition(pos.Left, pos.Top);
+        count++;
+        Thread.Sleep(1000);
+    }
 
-Board[] boards = {board, boardAI};
+}).Start(); 
 
-Menu menu = new Menu("Menu Główne");
-menu.Add(new StartGameMenuItem(boards));
-menu.Run();
+GameManager gameManager = new GameManager();
 
-board.Draw(0);
-CardManager.Instance.SetRandomModel();
-boardAI.Draw(10);
-CardManager.Instance.SetRandomModel();
-
-Human human = new Human(board);
-Computer computer = new Computer(boardAI, 10);
+gameManager.StartMenu();
+gameManager.StartGame();
 
 while (true)
 {
     TurnController.Instance.PlayTurn();
+    
+    if(gameManager.firstBoard.points == gameManager.firstBoard.totalPoints)
+    {
+        gameManager.GameOver(gameManager.firstBoard);
+    }else if(gameManager.secondBoard.points == gameManager.secondBoard.totalPoints)
+    {
+        gameManager.GameOver(gameManager.secondBoard);
+    }
 }
 
 

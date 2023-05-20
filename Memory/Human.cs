@@ -10,10 +10,12 @@ namespace Memory
     internal class Human : Player
     {
 
-        public Human(Board board) : base()
+        public Human(Board board, int distanceX, int positionX, bool isPlaying) : base()
         {
-            isPlaying = true;
-            actionController = new ActionController(this, 0, board, keyboard);
+            this.distanceX = distanceX;
+            this.isPlaying = isPlaying;
+            this.Position.X = positionX;
+            actionController = new ActionController(this, distanceX, board, keyboard);
         }
 
         public override void DoTurn()

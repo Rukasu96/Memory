@@ -23,7 +23,7 @@ namespace Memory
         {
             return () =>
             {
-                if (board.IsCardExist(positionX(), positionY()))
+                if (board.IsCardExist(positionX(), positionY(), distanceX))
                 {
                     player.Move(direction, board, distanceX);
                 }

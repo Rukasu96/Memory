@@ -11,7 +11,7 @@ namespace Memory
     {
         protected ActionController actionController;
         protected Keyboard keyboard;
-
+        protected int distanceX;
         public int Points { get; set; }
         public Coordinate Position { get; set; }
         public Direction Direction { get; set; }
@@ -32,28 +32,16 @@ namespace Memory
             switch (dir)
             {
                 case Direction.Left:
-                    if (board.IsCardExist(Position.X - distanceX - 1, Position.Y))
-                    {
-                        MakeMoveHorizontal(0, board.size - 1, -1);
-                    }
+                        MakeMoveHorizontal(0, board, board.size - 1, -1, Position.X - 1, distanceX);
                     break;
                 case Direction.Right:
-                    if (board.IsCardExist(Position.X - distanceX + 1, Position.Y))
-                    {
-                        MakeMoveHorizontal(board.size - 1, 0, 1);
-                    }
+                        MakeMoveHorizontal(board.size, board, board.size - 1, 1, Position.X + 1, distanceX);
                     break;
                 case Direction.Up:
-                    if (board.IsCardExist(Position.X - distanceX, Position.Y - 1))
-                    {
-                        MakeMoveVertical(0, board.size - 1, -1);
-                    }
+                        MakeMoveVertical(0, board, board.size - 1, -1, Position.Y - 1, distanceX);
                     break;
                 case Direction.Down:
-                    if (board.IsCardExist(Position.X - distanceX, Position.Y + 1))
-                    {
-                        MakeMoveVertical(board.size -1, 0, 1);
-                    }
+                        MakeMoveVertical(board.size, board, board.size - 1, 1, Position.Y + 1, distanceX);
                     break;
                 default:
                     break;
@@ -71,29 +59,35 @@ namespace Memory
 
         }
 
-        private void MakeMoveHorizontal(int RightLeftMaxPosition, int boardSize, int increaseValue)
+        private void MakeMoveHorizontal(int RightLeftMaxPosition, Board board, int boardSize, int increaseValue, int checkingCardPosX, int distanceX)
         {
-            if (Position.X == RightLeftMaxPosition && Position.Y != RightLeftMaxPosition)
+            if (board.IsCardExist(checkingCardPosX, Position.Y, distanceX))
             {
-                Position.X = boardSize;
-                Position.Y = Position.Y + increaseValue;
-            }
-            else
-            {
-                Position.X = Position.X + increaseValue;
+                if (Position.X == RightLeftMaxPosition && Position.Y != RightLeftMaxPosition)
+                {
+                    Position.X = boardSize;
+                    Position.Y = Position.Y + increaseValue;
+                }
+                else
+                {
+                    Position.X = Position.X + increaseValue;
+                }
             }
         }
 
-        private void MakeMoveVertical(int UpDownMaxPosition, int boardSize, int increaseValue)
+        private void MakeMoveVertical(int UpDownMaxPosition, Board board ,int boardSize, int increaseValue, int checkingCardPosY, int distanceX)
         {
-            if (Position.X != UpDownMaxPosition && Position.Y == UpDownMaxPosition)
+            if (board.IsCardExist(Position.X, checkingCardPosY, distanceX))
             {
-                Position.X = Position.X + increaseValue;
-                Position.Y = boardSize;
-            }
-            else
-            {
-                Position.Y = Position.Y + increaseValue;
+                if (Position.X != UpDownMaxPosition && Position.Y == UpDownMaxPosition)
+                {
+                    Position.X = Position.X + increaseValue;
+                    Position.Y = boardSize;
+                }
+                else
+                {
+                    Position.Y = Position.Y + increaseValue;
+                }
             }
         }
 

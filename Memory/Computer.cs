@@ -11,10 +11,11 @@ namespace Memory
     internal class Computer : Player
     {
         private Board boardAI;
-        private int distanceX;
         private List<Card> revealedCards;
         private List<Card> notRevealedCards;
         private Card? temporaryCard;
+
+        public Difficulty difficulty; 
 
         public Computer(Board boardAI, int distanceX) : base()
         {
@@ -22,8 +23,9 @@ namespace Memory
             Position.X = 10;
             this.distanceX = distanceX;
             isPlaying = false;
-
+            actionController = new ActionController(this, distanceX, boardAI, keyboard);
             revealedCards = new List<Card>();
+            difficulty = Difficulty.Medium;
             AddCardsToList();
         }
 
@@ -95,21 +97,26 @@ namespace Memory
                         switch (result)
                         {
                             case 0:
-                                Move(Direction.Up, boardAI, distanceX);
+                                keyboard.ButtonPressed(ConsoleKey.UpArrow);
+                                //Move(Direction.Up, boardAI, distanceX);
                                 break;
                             case 1:
-                                Move(Direction.Down, boardAI, distanceX);
+                                keyboard.ButtonPressed(ConsoleKey.DownArrow);
+                                //Move(Direction.Down, boardAI, distanceX);
                                 break;
                             case 2:
-                                Move(Direction.Left, boardAI, distanceX);
+                                keyboard.ButtonPressed(ConsoleKey.LeftArrow);
+                                //Move(Direction.Left, boardAI, distanceX);
                                 break;
                             case 3:
-                                Move(Direction.Right, boardAI, distanceX);
+                                keyboard.ButtonPressed(ConsoleKey.RightArrow);
+                                //Move(Direction.Right, boardAI, distanceX);
                                 break;
                             default:
                                 break;
                         }
 
+                        Thread.Sleep(200);
                     }
 
                     ComputerRevealCard(cardToReveal);
@@ -125,7 +132,7 @@ namespace Memory
             Random rand = new Random();
             int randNumb = rand.Next(0, 5);
 
-            if(randNumb >= 0) 
+            if(randNumb <= (int) difficulty) 
             {
                 return true;
             }
@@ -147,21 +154,25 @@ namespace Memory
                     case 0:
                         if (cardToReveal.position.X > Position.X)
                         {
-                            Move(Direction.Right, boardAI, distanceX);
+                            keyboard.ButtonPressed(ConsoleKey.RightArrow);
+                            //Move(Direction.Right, boardAI, distanceX);
                         }
                         else if (cardToReveal.position.X < Position.X)
                         {
-                            Move(Direction.Left, boardAI, distanceX);
+                            keyboard.ButtonPressed(ConsoleKey.LeftArrow);
+                            //Move(Direction.Left, boardAI, distanceX);
                         }
                         break;
                     case 1:
                         if (cardToReveal.position.Y > Position.Y)
                         {
-                            Move(Direction.Down, boardAI, distanceX);
+                            keyboard.ButtonPressed(ConsoleKey.DownArrow);
+                            //Move(Direction.Down, boardAI, distanceX);
                         }
                         else if (cardToReveal.position.Y < Position.Y)
                         {
-                            Move(Direction.Up, boardAI, distanceX);
+                            keyboard.ButtonPressed(ConsoleKey.UpArrow);
+                            //Move(Direction.Up, boardAI, distanceX);
                         }
                         break;
                     default:
@@ -172,6 +183,7 @@ namespace Memory
                 {
                     IsOnCardPosition = true;
                 }
+                Thread.Sleep(200);
 
             }
 

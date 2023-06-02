@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,14 +12,14 @@ namespace Memory
         private List<MenuItem> menuItems;
         private bool isMainMenu;
 
-        public State state;
+        public State _state;
 
         public Menu(string title, bool isMainMenu) : base(title)
         {
             menuItems = new List<MenuItem>();
             Action = () => Run();
             this.isMainMenu = isMainMenu;
-            state = State.Off;
+            _state = State.Off;
         }
 
         public void Add(MenuItem menuItem)
@@ -44,23 +45,26 @@ namespace Memory
         public void Run()
         {
             int option = -1;
-            while (option != menuItems.Count + 1 && state == State.Off)
+            while (option != menuItems.Count + 1 && _state == State.Off)
             {
                 ShowMenu();
-                option = int.Parse(Console.ReadLine());
-                if (option >= 1 && option <= menuItems.Count)
+                if (int.TryParse(Console.ReadLine(), out option))
                 {
-                    Console.Clear();
-                    menuItems[option - 1].Action?.Invoke();
-                }
-                else if (option == menuItems.Count + 1 && isMainMenu)
-                {
-                    Console.WriteLine("Wyjscie");
-                    Environment.Exit(0);
-                }
-                else if (option == menuItems.Count + 1)
-                {
-                    Console.Clear();
+                    option = int.Parse(Console.ReadLine());
+                    if (option >= 1 && option <= menuItems.Count)
+                    {
+                        Console.Clear();
+                        menuItems[option - 1].Action?.Invoke();
+                    }
+                    else if (option == menuItems.Count + 1 && isMainMenu)
+                    {
+                        Console.WriteLine("Wyjscie");
+                        Environment.Exit(0);
+                    }
+                    else if (option == menuItems.Count + 1)
+                    {
+                        Console.Clear();
+                    }
                 }
                 else
                 {

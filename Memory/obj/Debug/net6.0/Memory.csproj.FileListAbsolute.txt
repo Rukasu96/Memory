@@ -13,3 +13,5 @@ C:\Users\Kuksz\Desktop\Memory\Memory\obj\Debug\net6.0\refint\Memory.dll
 C:\Users\Kuksz\Desktop\Memory\Memory\obj\Debug\net6.0\Memory.pdb
 C:\Users\Kuksz\Desktop\Memory\Memory\obj\Debug\net6.0\Memory.genruntimeconfig.cache
 C:\Users\Kuksz\Desktop\Memory\Memory\obj\Debug\net6.0\ref\Memory.dll
+C:\Users\Kuksz\Desktop\Memory\Memory\bin\Debug\net6.0\Colorful.Console.dll
+C:\Users\Kuksz\Desktop\Memory\Memory\obj\Debug\net6.0\Memory.csproj.CopyComplete

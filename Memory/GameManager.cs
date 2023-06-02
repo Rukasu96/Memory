@@ -9,15 +9,15 @@ namespace Memory
     internal class GameManager
     {
 
-        public Board firstBoard;
-        public Board secondBoard;
+        public Board FirstBoard;
+        public Board SecondBoard;
         public int Size;
-        public Difficulty difficulty;
+        public Difficulty _difficulty;
         public bool IsPlayer;
 
         public GameManager()
         {
-            difficulty = Difficulty.Medium;
+            _difficulty = Difficulty.Medium;
             Size = 4;
             IsPlayer = false;
         }
@@ -41,7 +41,7 @@ namespace Memory
         public void GameOver(Board winBoard)
         {
             Console.Clear();
-            if(winBoard == firstBoard) 
+            if(winBoard == FirstBoard) 
             {
                 Console.WriteLine("Wygrałeś!");
             }
@@ -55,22 +55,22 @@ namespace Memory
 
         private void CreatePlayers()
         {
-            firstBoard = new Board();
-            secondBoard = new Board();
+            FirstBoard = new Board();
+            SecondBoard = new Board();
 
-            Human player = new Human(firstBoard, 0, 0,true);
+            Human player = new Human(FirstBoard, 0, 0,true);
 
             if (IsPlayer)
             {
-                Human player02 = new Human(secondBoard, 10, 10, false);
+                Human player02 = new Human(SecondBoard, 10, 10, false);
             }
             else
             {
-                Computer computer = new Computer(secondBoard, 10);
-                computer.difficulty = difficulty;
+                Computer computer = new Computer(SecondBoard, 10);
+                computer.difficulty = _difficulty;
             }
 
-            DrawBoards(firstBoard, secondBoard);
+            DrawBoards(FirstBoard, SecondBoard);
         }
 
         private void DrawBoards(Board firstBoard, Board secondBoard)

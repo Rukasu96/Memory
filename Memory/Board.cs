@@ -8,11 +8,12 @@ namespace Memory
 {
     internal class Board
     {
+        private Card?[,]? cards;
+
         public Card?[,]? Cards { get => cards;}
         public int size;
         public int points;
         public int totalPoints;
-        private Card?[,]? cards;
 
         public bool IsCardExist(int posX, int posY, int distanceX)
         {
@@ -47,7 +48,8 @@ namespace Memory
 
                         if(posX == 0 && posY == 0)
                         {
-                            isFinded = true;
+                            posX = size - 1;
+                            posY = size - 1;
                         }
                         else if(posX == 0)
                         {
@@ -70,17 +72,15 @@ namespace Memory
                             isFinded = true;
                         }
 
-                        if (posX == cards.GetLength(0) && posY == cards.GetLength(1))
+                        if (posX == size - 1 && posY == size - 1)
                         {
-                            isFinded = true;
+                            posX = 0;
+                            posY = 0;
                         }
                         else if (posX == size - 1)
                         {
                             posX = 0;
-                            if(posY < size - 1)
-                            {
-                                posY++;
-                            }
+                            posY++;
                         }
                         else
                         {

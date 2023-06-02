@@ -45,7 +45,7 @@ namespace Memory
                         isOk = true;
                     }
 
-                    mainMenu.state = State.On;
+                    mainMenu._state = State.On;
                 }
                 else
                 {
@@ -54,10 +54,6 @@ namespace Memory
             } while (!isOk);
 
             gameManager.Size = size;
-            /*foreach(Board board in boards)
-            {
-                board.size = size;
-            }*/
 
             Console.Clear();
         }

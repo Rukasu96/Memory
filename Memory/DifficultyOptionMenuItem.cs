@@ -9,7 +9,6 @@ namespace Memory
 {
     internal class DifficultyOptionMenuItem : MenuItem
     {
-        //private Computer computer;
         private GameManager gameManager;
         public DifficultyOptionMenuItem(GameManager gameManager) : base("Poziom trudności")
         {
@@ -38,7 +37,7 @@ namespace Memory
                 {
                     if (result > 0 && result <= difficulty.Length)
                     {
-                        gameManager.difficulty = (Difficulty)result + 1;
+                        gameManager._difficulty = (Difficulty)result + 1;
                         isOk = true;
                     }
 
@@ -51,7 +50,7 @@ namespace Memory
             
 
             Console.Clear();
-            Console.WriteLine($"Ustawiono na {gameManager.difficulty}");
+            Console.WriteLine($"Ustawiono na {gameManager._difficulty}");
         }
     }
     

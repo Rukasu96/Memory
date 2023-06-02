@@ -12,9 +12,10 @@ namespace Memory
         protected ActionController actionController;
         protected Keyboard keyboard;
         protected int distanceX;
-        public int Points { get; set; }
-        public Coordinate Position { get; set; }
-        public Direction Direction { get; set; }
+
+        public int Points;
+        public Coordinate Position;
+        public Direction Direction;
 
         public bool isPlaying;
         public Player()

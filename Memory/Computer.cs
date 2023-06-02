@@ -13,7 +13,8 @@ namespace Memory
         private Board boardAI;
         private List<Card> revealedCards;
         private List<Card> notRevealedCards;
-        private Card? temporaryCard;
+        private Card? firstTemporaryCard;
+        private Card? secondTemporaryCard;
 
         public Difficulty difficulty; 
 
@@ -36,9 +37,9 @@ namespace Memory
                 return;
             }
 
-            temporaryCard = null;
+            RemoveRevealedCardFromList(firstTemporaryCard, secondTemporaryCard);
 
-            Console.SetCursorPosition(Position.X, Position.Y);
+            firstTemporaryCard = null;
 
             for (int i = 0; i < 2; i++)
             {
@@ -47,9 +48,11 @@ namespace Memory
                     return;
                 }
 
+                Console.SetCursorPosition(Position.X, Position.Y);
+
                 Card? cardToReveal = null;
 
-                if(revealedCards.Count >= 2 && temporaryCard == null)
+                if(revealedCards.Count >= 2 && firstTemporaryCard == null)
                 {
                     bool HasTwoSameCard = false;
 
@@ -74,9 +77,9 @@ namespace Memory
                     }
 
                 }
-                else if (revealedCards.Count > 0 && temporaryCard != null)
+                else if (revealedCards.Count > 0 && firstTemporaryCard != null)
                 {
-                    cardToReveal = FindTheSameCard(temporaryCard);
+                    cardToReveal = FindTheSameCard(firstTemporaryCard);
                 }else if(notRevealedCards.Count > 0)
                 {
                     cardToReveal = DrawNotRevealedCard();
@@ -98,19 +101,15 @@ namespace Memory
                         {
                             case 0:
                                 keyboard.ButtonPressed(ConsoleKey.UpArrow);
-                                //Move(Direction.Up, boardAI, distanceX);
                                 break;
                             case 1:
                                 keyboard.ButtonPressed(ConsoleKey.DownArrow);
-                                //Move(Direction.Down, boardAI, distanceX);
                                 break;
                             case 2:
                                 keyboard.ButtonPressed(ConsoleKey.LeftArrow);
-                                //Move(Direction.Left, boardAI, distanceX);
                                 break;
                             case 3:
                                 keyboard.ButtonPressed(ConsoleKey.RightArrow);
-                                //Move(Direction.Right, boardAI, distanceX);
                                 break;
                             default:
                                 break;
@@ -155,24 +154,20 @@ namespace Memory
                         if (cardToReveal.position.X > Position.X)
                         {
                             keyboard.ButtonPressed(ConsoleKey.RightArrow);
-                            //Move(Direction.Right, boardAI, distanceX);
                         }
                         else if (cardToReveal.position.X < Position.X)
                         {
                             keyboard.ButtonPressed(ConsoleKey.LeftArrow);
-                            //Move(Direction.Left, boardAI, distanceX);
                         }
                         break;
                     case 1:
                         if (cardToReveal.position.Y > Position.Y)
                         {
                             keyboard.ButtonPressed(ConsoleKey.DownArrow);
-                            //Move(Direction.Down, boardAI, distanceX);
                         }
                         else if (cardToReveal.position.Y < Position.Y)
                         {
                             keyboard.ButtonPressed(ConsoleKey.UpArrow);
-                            //Move(Direction.Up, boardAI, distanceX);
                         }
                         break;
                     default:
@@ -192,22 +187,32 @@ namespace Memory
 
         private void ComputerRevealCard(Card? cardToReveal)
         {
-            temporaryCard = boardAI.Cards[Position.X - distanceX, Position.Y];
+            firstTemporaryCard = boardAI.Cards[Position.X - distanceX, Position.Y];
 
-            if (revealedCards.FirstOrDefault(x => x == temporaryCard) == null)
+            if (cardToReveal != null)
+            {
+                firstTemporaryCard = cardToReveal;
+            }
+
+            if (revealedCards.FirstOrDefault(x => x == firstTemporaryCard) == null)
             {
                 if (TryToAddReveleadCard())
                 {
-                    revealedCards.Add(temporaryCard);
+                    revealedCards.Add(firstTemporaryCard);
                 }
             }
 
             CardManager.Instance.RevealCard(boardAI, Position.X, Position.Y, distanceX);
 
-            if(revealedCards.Count > 0)
+            if(firstTemporaryCard != null)
             {
-                RemoveRevealedCardFromList(temporaryCard);
+                secondTemporaryCard = cardToReveal;
             }
+
+            /*if(secondTemporaryCard != null)
+            {
+                RemoveRevealedCardFromList(firstTemporaryCard, secondTemporaryCard);
+            }*/
 
             Thread.Sleep(200);
         }
@@ -216,20 +221,18 @@ namespace Memory
         {
             MoveToCard(firstCard);
             MoveToCard(secondCard);
-            revealedCards.Remove(firstCard);
-            revealedCards.Remove(secondCard);
         }
 
-        private void RemoveRevealedCardFromList(Card cardToRemove)
+        private void RemoveRevealedCardFromList(Card firstCardToRemove, Card secondCardToRemove)
         {
-            var cardsToRemove = revealedCards.Where(x => x == null || x.state is Revealed ).ToList();
-
-            foreach(Card card in cardsToRemove)
+            if(firstCardToRemove != null && firstCardToRemove.state is Hided)
             {
-                revealedCards.Remove(card);
+                return;
             }
 
-            cardsToRemove.Clear();
+            revealedCards.Remove(firstCardToRemove);
+            revealedCards.Remove(secondCardToRemove);
+            
         }
 
         private Card? FindTheSameCard(Card card)

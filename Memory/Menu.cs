@@ -50,7 +50,7 @@ namespace Memory
                 ShowMenu();
                 if (int.TryParse(Console.ReadLine(), out option))
                 {
-                    option = int.Parse(Console.ReadLine());
+                    //option = int.Parse(Console.ReadLine());
                     if (option >= 1 && option <= menuItems.Count)
                     {
                         Console.Clear();

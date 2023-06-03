@@ -58,13 +58,13 @@ namespace Memory
 
                     for (int z = 0; z < revealedCards.Count - 1; z++)
                     {
-                        Card firstCardInMemory = revealedCards[z];
+                        firstTemporaryCard = revealedCards[z];
 
-                        var secondCardInMemory = FindTheSameCard(firstCardInMemory);
+                        secondTemporaryCard = FindTheSameCard(firstTemporaryCard);
 
-                        if (secondCardInMemory != null)
+                        if (secondTemporaryCard != null)
                         {
-                            RevealTwoTheSameCards(firstCardInMemory, secondCardInMemory);
+                            RevealTwoTheSameCards(firstTemporaryCard, secondTemporaryCard);
                             HasTwoSameCard = true;
                             break;
                         }
@@ -225,7 +225,10 @@ namespace Memory
 
         private void RemoveRevealedCardFromList(Card firstCardToRemove, Card secondCardToRemove)
         {
-            if(firstCardToRemove != null && firstCardToRemove.state is Hided)
+            if(firstCardToRemove == null)
+            {
+                return;
+            }else if(firstCardToRemove.state is Hided)
             {
                 return;
             }
